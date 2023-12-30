@@ -11,13 +11,19 @@ def process_expenses_date(_expenses):
         port='5432'
     )
     db1_cursor = db1_conn.cursor()
-    for expense in _expenses: 
+    for expense in _expenses:
         if expense['Status'] == 1:
             state = 'Aprobado'
-            db1_cursor.execute(f'INSERT INTO mp_gastos (id, concepto, monto, empleado_id, estado) VALUES'
-                               f' ({expense["Id"]}, ' + "'" + expense["Category"] + "'" + f', {expense["Total"]}, {expense["UserId"]}, ' + "'" + state + "'" + f');')
-            db1_conn.commit()
+            try:
+                db1_cursor.execute(f'INSERT INTO mp_gastos (id, concepto, monto, empleado_id, estado) VALUES'
+                                   f' ({expense["Id"]}, ' + "'" + expense["Category"] + "'" + f', {expense["Total"]}, {expense["UserId"]}, ' + "'" + state + "'" + f');')
 
+            except psycopg2.IntegrityError as e:
+                # Si se produce un error de integridad, asumimos que el ID ya existe, entonces actualizamos en lugar de insertar
+                db1_conn.rollback()
+                db1_cursor.execute(f'UPDATE mp_gastos SET concepto = ' + "'" + expense["Category"] + "'" + f', monto = {expense["Total"]}, empleado_id = {expense["UserId"]}, estado = ' + "'" + state + "'" + f' WHERE id = {expense["Id"]};')
+
+        db1_conn.commit()
 # URL base de la API
 url_base = "https://api.rindegastos.com/v1"
 
@@ -28,7 +34,7 @@ ruta_especifica = "/getExpenses?Currency=CLP"
 url_completa = url_base + ruta_especifica
 
 # Clave de autorización
-clave_autorizacion = "test"
+clave_autorizacion = ""
 
 # Encabezados de la solicitud con la clave de autorización
 headers = {
