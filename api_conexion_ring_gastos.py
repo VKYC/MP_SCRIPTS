@@ -11,7 +11,7 @@ def process_expenses_date(_expenses):
         port='5432'
     )
     db1_cursor = db1_conn.cursor()
-    for expense in _expenses:
+    for expense in _expenses: 
         if expense['Status'] == 1:
             state = 'Aprobado'
             db1_cursor.execute(f'INSERT INTO mp_gastos (id, concepto, monto, empleado_id, estado) VALUES'
