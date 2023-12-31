@@ -24,6 +24,7 @@ def process_expenses_date(_expenses):
                 db1_cursor.execute(f'UPDATE mp_gastos SET concepto = ' + "'" + expense["Category"] + "'" + f', monto = {expense["Total"]}, empleado_id = {expense["UserId"]}, estado = ' + "'" + state + "'" + f' WHERE id = {expense["Id"]};')
 
         db1_conn.commit()
+    db1_conn.close()
 # URL base de la API
 url_base = "https://api.rindegastos.com/v1"
 
