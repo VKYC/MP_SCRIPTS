@@ -41,9 +41,9 @@ for rec in result_db1:
     if not result_db2:
         query_insert = f"INSERT INTO mp_facturas_conciliacion (" \
                        f"rzn_soc_emisor, rut_emisor, folio, monto_total, " \
-                       f"fecha_emision, fecha_vencimiento, orden_compra, fecha_sii" \
+                       f"fecha_emision, fecha_vencimiento, orden_compra, fecha_sii, estado" \
                        f") VALUES ('{rec[0]}', '{rec[1]}', {rec[2]}, {rec[3]}, '{rec[4]}', '{rec[5]}', '{rec[6]}', " \
-                       f"'{rec[7]}')"
+                       f"'{rec[7]}', False)"
         db2_cursor.execute(query_insert)
         db2_conn.commit()
 
