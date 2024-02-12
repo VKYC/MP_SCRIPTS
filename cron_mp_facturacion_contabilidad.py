@@ -24,7 +24,7 @@ hoy = date.today()
 
 # Consulta en la base de datos PostgreSQL (procesos)
 query = 'select rzn_soc_emisor, rut_emisor, folio, monto_total, fecha_emision, fecha_vencimiento, orden_compra, ' \
-        'fecha_sii from "recepcion_dtes" ' \
+        'fecha_sii, dv_emisor from "recepcion_dtes" ' \
         'where tipo_dctos_id= 1 ' \
         ' and extract(day from fecha_sii)= extract(day from now())-1' \
         ' and extract(month from fecha_sii)= extract(month from now())' \
@@ -42,7 +42,7 @@ for rec in result_db1:
         query_insert = f"INSERT INTO mp_facturas_conciliacion (" \
                        f"rzn_soc_emisor, rut_emisor, folio, monto_total, " \
                        f"fecha_emision, fecha_vencimiento, orden_compra, fecha_sii, estado" \
-                       f") VALUES ('{rec[0]}', '{rec[1]}', {rec[2]}, {rec[3]}, '{rec[4]}', '{rec[5]}', '{rec[6]}', " \
+                       f") VALUES ('{rec[0]}', '{rec[1]}-{rec[8]}', {rec[2]}, {rec[3]}, '{rec[4]}', '{rec[5]}', '{rec[6]}', " \
                        f"'{rec[7]}', False)"
         db2_cursor.execute(query_insert)
         db2_conn.commit()
