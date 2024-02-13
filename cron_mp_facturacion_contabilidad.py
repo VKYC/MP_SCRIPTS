@@ -1,5 +1,7 @@
 import psycopg2
 from datetime import date
+from datetime import datetime
+
 
 # Conexión a la base de datos PostgreSQL (mp_seadte)
 db1_conn = psycopg2.connect(
@@ -39,10 +41,14 @@ for rec in result_db1:
     db2_cursor.execute(query_validator)
     result_db2 = db2_cursor.fetchall()
     if not result_db2:
+        if not rec[5]:
+            date = datetime.now()
+        else:
+            date = rec[5]
         query_insert = f"INSERT INTO mp_facturas_conciliacion (" \
                        f"rzn_soc_emisor, rut_emisor, folio, monto_total, " \
                        f"fecha_emision, fecha_vencimiento, orden_compra, fecha_sii, estado" \
-                       f") VALUES ('{rec[0]}', '{rec[1]}-{rec[8]}', {rec[2]}, {rec[3]}, '{rec[4]}', '{rec[5]}', '{rec[6]}', " \
+                       f") VALUES ('{rec[0]}', '{rec[1]}-{rec[8]}', {rec[2]}, {rec[3]}, '{rec[4]}', '{date}', '{rec[6]}', " \
                        f"'{rec[7]}', False)"
         db2_cursor.execute(query_insert)
         db2_conn.commit()
