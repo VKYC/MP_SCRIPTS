@@ -30,7 +30,7 @@ query = 'select rzn_soc_emisor, rut_emisor, folio, monto_total, fecha_emision, f
         ' and extract(month from fecha_sii)= extract(month from now())' \
         ' and extract(year from fecha_sii)= extract(year from now())' \
         ' and fecha_sii is not null ' \
-        ' and fecha_vencimiento is not null and fecha_emision is not null and monto_total is not null' \
+        ' and fecha_emision is not null and monto_total is not null' \
         ' and folio is not null and rut_emisor is not null and rzn_soc_emisor is not null'
 db1_cursor.execute(query)
 result_db1 = db1_cursor.fetchall()
