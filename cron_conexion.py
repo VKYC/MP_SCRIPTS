@@ -23,18 +23,24 @@ db2_cursor = db2_conn.cursor()
 hoy = date.today()
 
 # Consulta en la base de datos PostgreSQL (procesos)
-query = 'select valor from "INDICADORES_FINANCIEROS" WHERE fecha = ' + "'" + hoy.today().strftime("%Y-%m-%d") + "'" + ' and codigo_indicador = ' + "'" + 'dolar' + "';"
+query = 'select valor, codigo_indicador from "INDICADORES_FINANCIEROS" WHERE fecha = ' + "'" + \
+        hoy.today().strftime("%Y-%m-%d") + "'"
 db1_cursor.execute(query)
 result_db1 = db1_cursor.fetchall()
+for result in result_db1:
+    value = result[0]
+    name = result[1].replace(' ', '').upper()
+    if name == 'DOLAR':
+        name = 'USD'
+    elif name == 'EURO':
+        name = 'EUR'
+    clp_per_unit = 1 / value
 
-clp_per_unit = 1 / result_db1[0][0]
-
-db2_cursor.execute('select id from res_currency where code = ' + "'" + 'US' + "'")
-currency_id = db2_cursor.fetchall()[0][0]
-
-db2_cursor.execute('INSERT INTO res_currency_rate (name, rate, currency_id, company_id) VALUES (' + "'" +
-                   hoy.today().strftime("%Y-%m-%d") + "', " + str(clp_per_unit) + ', ' + str(currency_id) + ', 1);')
-db2_conn.commit()
+    db2_cursor.execute('select id from res_currency where name = ' + "'" + name + "'")
+    currency_id = db2_cursor.fetchall()[0][0]
+    db2_cursor.execute('INSERT INTO res_currency_rate (name, rate, currency_id, company_id) VALUES (' + "'" +
+                       hoy.today().strftime("%Y-%m-%d") + "', " + str(clp_per_unit) + ', ' + str(currency_id) + ', 1);')
+    db2_conn.commit()
 
 # Cierra las conexiones
 db1_conn.close()
