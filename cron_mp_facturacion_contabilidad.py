@@ -37,7 +37,7 @@ query = 'select rzn_soc_emisor, rut_emisor, folio, monto_total, fecha_emision, f
 db1_cursor.execute(query)
 result_db1 = db1_cursor.fetchall()
 for rec in result_db1:
-    query_validator = f"select * from mp_facturas_conciliacion where rut_emisor = '{rec[1]}' and folio = {rec[2]}"
+    query_validator = f"select * from mp_facturas_conciliacion where rut_emisor = '{rec[1]}-{rec[8]}' and folio = {rec[2]}"
     db2_cursor.execute(query_validator)
     result_db2 = db2_cursor.fetchall()
     if not result_db2:
